@@ -2,6 +2,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import theme from "../../theme/theme";
 
+
 // interface ILoaderProps {
 //   size?: number | string;
 //   withPadding?: boolean;

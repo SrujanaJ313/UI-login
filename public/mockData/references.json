@@ -1,0 +1,62 @@
+[
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "completed",
+        "di": "",
+        "msl": ""
+    },
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "pending",
+        "di": "",
+        "msl": ""
+    },
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "completed",
+        "di": "",
+        "msl": ""
+    },
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "pending",
+        "di": "",
+        "msl": ""
+    },
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "completed",
+        "di": "",
+        "msl": ""
+    },
+    {
+        "uiAccountNumber": "000009251",
+        "unit": "000",
+        "layoffDate": "02/10/2023",
+        "recallDate": "02/17/2023",
+        "claimantsCount": 24,
+        "status": "completed",
+        "di": "",
+        "msl": ""
+    }
+]
