@@ -25,6 +25,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import MailIcon from "@mui/icons-material/Mail";
 import SmartphoneIcon from "@mui/icons-material/Smartphone";
 import BadgeIcon from "@mui/icons-material/Badge";
+import { SecurityQuestions } from "../../components/SecurityQuestions";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -339,8 +340,17 @@ export default function Register() {
                       }
                       variant="outlined"
                       margin="normal"
+                      size="small"
+                      sx={{mb:3}}
                     >
                       <DatePicker
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "30px",
+                            height: "40px",
+                          }
+                        }}
+                      
                         name="dateOfBirth"
                         label="Date of Birth"
                         value={formik.values.dateOfBirth}
@@ -348,14 +358,9 @@ export default function Register() {
                         onChange={(value) =>
                           formik.setFieldValue("dateOfBirth", value)
                         }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                          />
-                        )}
+                        slotProps={{
+                          textField: { size: "small" },
+                        }}
                       />
                       {formik.touched.dateOfBirth &&
                         formik.errors.dateOfBirth && (
@@ -365,6 +370,9 @@ export default function Register() {
                         )}
                     </FormControl>
                   </LocalizationProvider>
+
+                  <SecurityQuestions />
+
                   <Captcha
                     formik={formik}
                     captcha={captcha}
@@ -383,7 +391,7 @@ export default function Register() {
                       borderRadius: "30px",
                     }}
                   >
-                    Register
+                    Create Account
                   </Button>
                 </form>
               );

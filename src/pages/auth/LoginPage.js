@@ -9,8 +9,8 @@ import { Divider } from "@mui/material";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
+// import FormControlLabel from "@mui/material/FormControlLabel";
 import { useState } from "react";
 import { Captcha } from "../../components/captcha";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -21,7 +21,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const user =
     localStorage.getItem("user") && JSON.parse(localStorage.getItem("user"));
-  const [remember, setRemember] = useState(user?.remember || false);
+  // const [remember, setRemember] = useState(user?.remember || false);
   const [captcha, setCaptcha] = useState(() =>
     Math.random().toString(36).slice(8)
   );
@@ -31,26 +31,27 @@ export default function LoginPage() {
   };
 
   const handleSubmit = (values) => {
-    if (remember) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          userID: values.userID,
-          password: values.password,
-          remember,
-        })
-      );
-    } else {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          userIdentity: "123",
-          userName: "Test User",
-          userEmail: "testUser@gmail.com",
-        })
-      );
-    }
-    navigate("/msl-reference-list", { state: { remember } });
+    // if (remember) {
+    //   localStorage.setItem(
+    //     "user",
+    //     JSON.stringify({
+    //       userID: values.userID,
+    //       password: values.password,
+    //       remember,
+    //     })
+    //   );
+    // } else {
+    //   localStorage.setItem(
+    //     "user",
+    //     JSON.stringify({
+    //       userIdentity: "123",
+    //       userName: "Test User",
+    //       userEmail: "testUser@gmail.com",
+    //     })
+    //   );
+    // }
+    // navigate("/msl-reference-list", { state: { remember } });
+    navigate("/msl-reference-list");
   };
 
   const validationSchema = Yup.object().shape({
@@ -82,7 +83,7 @@ export default function LoginPage() {
           initialValues={{
             userID: user?.userID || "",
             password: user?.password || "",
-            remember,
+            // remember,
             captcha: "",
           }}
           validationSchema={validationSchema}
@@ -157,14 +158,14 @@ export default function LoginPage() {
                 >
                   Log In
                 </Button>
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                {/* <div style={{ display: "flex", justifyContent: "center" }}>
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Remember Me"
                     checked={remember}
                     onClick={() => setRemember(!remember)}
                   />
-                </div>
+                </div> */}
               </form>
             );
           }}
