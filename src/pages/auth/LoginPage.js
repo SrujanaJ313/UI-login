@@ -31,6 +31,13 @@ export default function LoginPage() {
   };
 
   const handleSubmit = (values) => {
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        userID: values.userID,
+        password: values.password,
+      })
+    );
     // if (remember) {
     //   localStorage.setItem(
     //     "user",
