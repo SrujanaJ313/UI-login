@@ -1,30 +1,30 @@
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import {
+  Box,
   Button,
+  Container,
   Divider,
   FormControl,
   FormHelperText,
-  Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { useNavigate } from "react-router-dom";
-import { validatePassword } from "../../utils/common";
-import { toast, ToastContainer } from "react-toastify";
-import { Captcha } from "../../components/captcha";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import InputAdornment from "@mui/material/InputAdornment";
 import LockIcon from "@mui/icons-material/Lock";
 import MailIcon from "@mui/icons-material/Mail";
 import SmartphoneIcon from "@mui/icons-material/Smartphone";
 import BadgeIcon from "@mui/icons-material/Badge";
+import { validatePassword } from "../../utils/common";
+import { Captcha } from "../../components/captcha";
 import { SecurityQuestions } from "../../components/SecurityQuestions";
 
 export default function Register() {
@@ -36,20 +36,12 @@ export default function Register() {
   const getCaptcha = (captchaValue) => {
     setCaptcha(captchaValue);
   };
-  const handleSubmit = (values) => {
-    // console.log(values);
-    toast("Registered Successfully!");
-    setTimeout(() => {
-      navigate("/login");
-    }, 3 * 1000);
-  };
 
   const validationSchema = Yup.object().shape({
     userID: Yup.string().required("UserID is required"),
-    // password: Yup.string().required("Password is required"),
     password: Yup.string()
       .required("Password is required")
-      .min(8, ["Password must be 8 characters long"])
+      .min(8, "Password must be 8 characters long")
       .matches(/[0-9]/, "Password requires a number")
       .matches(/[a-z]/, "Password requires a lowercase letter")
       .matches(/[A-Z]/, "Password requires an uppercase letter")
@@ -70,7 +62,27 @@ export default function Register() {
       .required("Mobile Number is required")
       .matches(/^[0-9]{10}$/, "Invalid Mobile Number"),
     dateOfBirth: Yup.string().required("Date of Birth is required"),
-    captcha: Yup.string().required("please enter captcha").matches(captcha),
+    captcha: Yup.string().required("Please enter captcha").matches(captcha),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      userID: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      middleInitial: "",
+      lastName: "",
+      email: "",
+      mobileNumber: "",
+      dateOfBirth: null,
+      captcha: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      toast("Registered Successfully!");
+      setTimeout(() => navigate("/login"), 3000);
+    },
   });
 
   return (
@@ -86,346 +98,250 @@ export default function Register() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
             backgroundColor: "white",
           }}
         >
           <Typography component="h1" variant="h3" fontWeight="900">
             NHUIS
           </Typography>
-          <Formik
-            initialValues={{
-              userID: "",
-              password: "",
-              confirmPassword: "",
-              firstName: "",
-              middleInitial: "",
-              lastName: "",
-              email: "",
-              mobileNumber: "",
-              dateOfBirth: null,
-              captcha: "",
-            }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {(formik) => {
-              return (
-                <form onSubmit={formik.handleSubmit}>
-                  <TextField
-                    size="small"
-                    name="userID"
-                    placeholder="User ID"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.userID}
-                    error={
-                      formik.touched.userID && Boolean(formik.errors.userID)
-                    }
-                    helperText={formik.touched.userID && formik.errors.userID}
-                    label="User ID"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountCircleIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
-                    // error={
-                    //   formik.touched.password && Boolean(formik.errors.password)
-                    // }
-                    // helperText={formik.touched.password && formik.errors.password}
-                    label="Password"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  {formik.touched.password && formik.errors.password && (
-                    <div>
-                      {validatePassword(formik.values.password).map((err) => (
-                        <div
-                          style={{ fontSize: 12, color: err.errorCode }}
-                          key={err.description}
-                        >
-                          {err.errorCode === "red" ? (
-                            <span>&#10008;</span>
-                          ) : (
-                            <span>&#10004;</span>
-                          )}
-                          {err.description}
-                        </div>
-                      ))}
-                    </div>
-                  )}
 
-                  <TextField
-                    size="small"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
-                    type="password"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.confirmPassword}
-                    error={
-                      formik.touched.confirmPassword &&
-                      Boolean(formik.errors.confirmPassword)
-                    }
-                    helperText={
-                      formik.touched.confirmPassword &&
-                      formik.errors.confirmPassword
-                    }
-                    label="Confirm Password"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="firstName"
-                    placeholder="First Name"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.firstName}
-                    error={
-                      formik.touched.firstName &&
-                      Boolean(formik.errors.firstName)
-                    }
-                    helperText={
-                      formik.touched.firstName && formik.errors.firstName
-                    }
-                    label="First Name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BadgeIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="middleInitial"
-                    placeholder="Middle Intital"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.middleInitial}
-                    error={
-                      formik.touched.middleInitial &&
-                      Boolean(formik.errors.middleInitial)
-                    }
-                    helperText={
-                      formik.touched.middleInitial &&
-                      formik.errors.middleInitial
-                    }
-                    label="Middle Initial"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BadgeIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="lastName"
-                    placeholder="Last Name"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.lastName}
-                    error={
-                      formik.touched.lastName && Boolean(formik.errors.lastName)
-                    }
-                    helperText={
-                      formik.touched.lastName && formik.errors.lastName
-                    }
-                    label="Last Name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BadgeIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="email"
-                    placeholder="Email"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.email}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                    label="Email"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <MailIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
-                  <TextField
-                    size="small"
-                    name="mobileNumber"
-                    placeholder="Mobile Number"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    onChange={formik.handleChange}
-                    value={formik.values.mobileNumber}
-                    error={
-                      formik.touched.mobileNumber &&
-                      Boolean(formik.errors.mobileNumber)
-                    }
-                    helperText={
-                      formik.touched.mobileNumber && formik.errors.mobileNumber
-                    }
-                    label="Mobile Number"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SmartphoneIcon />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: 30 },
-                    }}
-                  />
+          <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+            <Stack spacing={2} mt={2}>
+              <TextField
+                size="small"
+                name="userID"
+                label="User ID"
+                placeholder="User ID"
+                fullWidth
+                onChange={formik.handleChange}
+                value={formik.values.userID}
+                error={formik.touched.userID && Boolean(formik.errors.userID)}
+                helperText={formik.touched.userID && formik.errors.userID}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircleIcon />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 30 },
+                }}
+              />
 
-                  <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <FormControl
-                      fullWidth
-                      error={
-                        formik.touched.dateOfBirth &&
-                        Boolean(formik.errors.dateOfBirth)
-                      }
-                      variant="outlined"
-                      margin="normal"
-                      size="small"
-                      sx={{mb:3}}
+              <TextField
+                size="small"
+                name="password"
+                label="Password"
+                placeholder="Password"
+                type="password"
+                fullWidth
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 30 },
+                }}
+              />
+              {formik.touched.password && formik.errors.password && (
+                <div>
+                  {validatePassword(formik.values.password).map((err) => (
+                    <div
+                      style={{ fontSize: 12, color: err.errorCode }}
+                      key={err.description}
                     >
-                      <DatePicker
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "30px",
-                            height: "40px",
-                          }
-                        }}
-                      
-                        name="dateOfBirth"
-                        label="Date of Birth"
-                        value={formik.values.dateOfBirth}
-                        placeholder="Date of Birth"
-                        onChange={(value) =>
-                          formik.setFieldValue("dateOfBirth", value)
-                        }
-                        slotProps={{
-                          textField: { size: "small" },
-                        }}
-                      />
-                      {formik.touched.dateOfBirth &&
-                        formik.errors.dateOfBirth && (
-                          <FormHelperText>
-                            {formik.errors.dateOfBirth}
-                          </FormHelperText>
-                        )}
-                    </FormControl>
-                  </LocalizationProvider>
+                      {err.errorCode === "red" ? "✘" : "✔"} {err.description}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-                  <SecurityQuestions />
+              <TextField
+                size="small"
+                name="confirmPassword"
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                type="password"
+                fullWidth
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                helperText={
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 30 },
+                }}
+              />
 
-                  <Captcha
-                    formik={formik}
-                    captcha={captcha}
-                    getCaptcha={getCaptcha}
-                  />
-                  <Button
-                    size="small"
-                    type="submit"
-                    fullWidth
-                    variant="contained"
+              {["firstName", "middleInitial", "lastName"].map((field) => (
+                <TextField
+                  key={field}
+                  size="small"
+                  name={field}
+                  label={
+                    field === "firstName"
+                      ? "First Name"
+                      : field === "middleInitial"
+                      ? "Middle Initial"
+                      : "Last Name"
+                  }
+                  placeholder={
+                    field === "firstName"
+                      ? "First Name"
+                      : field === "middleInitial"
+                      ? "Middle Initial"
+                      : "Last Name"
+                  }
+                  fullWidth
+                  onChange={formik.handleChange}
+                  value={formik.values[field]}
+                  error={formik.touched[field] && Boolean(formik.errors[field])}
+                  helperText={formik.touched[field] && formik.errors[field]}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <BadgeIcon />
+                      </InputAdornment>
+                    ),
+                    sx: { borderRadius: 30 },
+                  }}
+                />
+              ))}
+
+              <TextField
+                size="small"
+                name="email"
+                label="Email"
+                placeholder="Email"
+                fullWidth
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailIcon />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 30 },
+                }}
+              />
+
+              <TextField
+                size="small"
+                name="mobileNumber"
+                label="Mobile Number"
+                placeholder="Mobile Number"
+                fullWidth
+                onChange={formik.handleChange}
+                value={formik.values.mobileNumber}
+                error={
+                  formik.touched.mobileNumber &&
+                  Boolean(formik.errors.mobileNumber)
+                }
+                helperText={
+                  formik.touched.mobileNumber && formik.errors.mobileNumber
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SmartphoneIcon />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 30 },
+                }}
+              />
+
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <FormControl
+                  fullWidth
+                  error={
+                    formik.touched.dateOfBirth &&
+                    Boolean(formik.errors.dateOfBirth)
+                  }
+                >
+                  <DatePicker
+                    label="Date of Birth"
+                    value={formik.values.dateOfBirth}
+                    onChange={(value) =>
+                      formik.setFieldValue("dateOfBirth", value)
+                    }
+                    slotProps={{ textField: { size: "small" } }}
                     sx={{
-                      mt: 3,
-                      mb: 2,
-                      textTransform: "none",
-                      fontSize: "1.2rem",
-                      borderRadius: "30px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "30px",
+                        height: "40px",
+                      },
                     }}
-                  >
-                    Create Account
-                  </Button>
-                </form>
-              );
-            }}
-          </Formik>
+                  />
+                  {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
+                    <FormHelperText>
+                      {formik.errors.dateOfBirth}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </LocalizationProvider>
 
-          <Grid
-            container
+              <SecurityQuestions />
+
+              <Captcha
+                formik={formik}
+                captcha={captcha}
+                getCaptcha={getCaptcha}
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  textTransform: "none",
+                  fontSize: "1.2rem",
+                  borderRadius: "30px",
+                }}
+              >
+                Create Account
+              </Button>
+            </Stack>
+          </form>
+
+          <Stack
+            direction="row"
             alignItems="center"
             justifyContent="center"
-            flexDirection="row"
-            gap={2}
+            spacing={2}
+            sx={{ mt: 2 }}
           >
-            <Grid item flexItem sx={{ width: "40%" }}>
-              <Divider />
-            </Grid>
+            <Divider sx={{ flex: 1 }} />
             <Typography component="span" sx={{ fontSize: "1.2rem" }}>
               or
             </Typography>
-            <Grid item flexItem sx={{ width: "40%" }}>
-              <Divider />
-            </Grid>
-          </Grid>
+            <Divider sx={{ flex: 1 }} />
+          </Stack>
+
           <Button
             fullWidth
             variant="contained"
             sx={{
-              mt: 3,
-              mb: 2,
+              mt: 2,
               borderRadius: "30px",
               textTransform: "none",
               fontSize: "1.2rem",
             }}
-            size="small"
             onClick={() => navigate("/login")}
           >
             Log In

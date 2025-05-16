@@ -1,14 +1,18 @@
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Button,
+  TextField,
+  Box,
+  Typography,
+  Container,
+  Stack,
+  Link,
+} from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import OTPicon from "../../../src/assets/images/otp-icon.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
+
 export default function Verification() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,7 +27,6 @@ export default function Verification() {
   const [error, setError] = useState("");
 
   const handleSubmit = () => {
-    // Handle form submission
     const otpValue = `${otpValue1}${otpValue2}${otpValue3}${otpValue4}`;
     if (!isValidOtp(otpValue)) {
       setError("Invalid OTP");
@@ -35,9 +38,7 @@ export default function Verification() {
     }, 2 * 1000);
   };
 
-  const isValidOtp = (value) => {
-    return /^[0-9]{4}$/.test(value);
-  };
+  const isValidOtp = (value) => /^[0-9]{4}$/.test(value);
 
   const onChangeHandler = (event) => {
     setOtpValue((prevOtpValue) => ({
@@ -65,20 +66,21 @@ export default function Verification() {
           <Typography component="h1" variant="h3" fontWeight="900">
             NHUIS
           </Typography>
-          <Typography style={{ margin: "20px", fontSize: "1.6rem" }}>
+          <Typography sx={{ mt: 2, fontSize: "1.6rem" }}>
             Two-Step Verification
           </Typography>
-          <img src={OTPicon} alt="" />
+          <img src={OTPicon} alt="OTP Icon" />
           <Typography
             textAlign="center"
             fontSize="1.4rem"
-            style={{ marginTop: "20px" }}
+            sx={{ mt: 2 }}
           >
-            Enter the verification code we sent to<br></br>
+            Enter the verification code we sent to<br />
             <span style={{ fontWeight: "bold" }}>{location?.state?.email}</span>
           </Typography>
+
           <form>
-            <Box sx={{ display: "flex", gap: "10px" }}>
+            <Stack direction="row" spacing={1} mt={2} justifyContent="center">
               <TextField
                 name="otpValue1"
                 size="small"
@@ -86,10 +88,8 @@ export default function Verification() {
                 value={otpValue1}
                 onChange={onChangeHandler}
                 fullWidth
-                margin="normal"
                 inputProps={{ maxLength: 1, style: { textAlign: "center" } }}
               />
-
               <TextField
                 name="otpValue2"
                 size="small"
@@ -97,10 +97,8 @@ export default function Verification() {
                 value={otpValue2}
                 onChange={onChangeHandler}
                 fullWidth
-                margin="normal"
                 inputProps={{ maxLength: 1, style: { textAlign: "center" } }}
               />
-
               <TextField
                 name="otpValue3"
                 size="small"
@@ -108,10 +106,8 @@ export default function Verification() {
                 value={otpValue3}
                 onChange={onChangeHandler}
                 fullWidth
-                margin="normal"
                 inputProps={{ maxLength: 1, style: { textAlign: "center" } }}
               />
-
               <TextField
                 name="otpValue4"
                 size="small"
@@ -119,15 +115,18 @@ export default function Verification() {
                 value={otpValue4}
                 onChange={onChangeHandler}
                 fullWidth
-                margin="normal"
                 inputProps={{ maxLength: 1, style: { textAlign: "center" } }}
               />
-            </Box>
-            {error && <p style={{ fontSize: 15, color: "red" }}>{error}</p>}
+            </Stack>
+
+            {error && (
+              <Typography color="error" fontSize="0.9rem" mt={1}>
+                {error}
+              </Typography>
+            )}
 
             <Button
               size="small"
-              // type="submit"
               fullWidth
               variant="contained"
               sx={{
@@ -143,25 +142,22 @@ export default function Verification() {
             </Button>
           </form>
 
-          <Grid
-            item
-            container
-            justifyContent="center"
-            sx={{ m: 2, fontSize: "1rem" }}
-          >
-            Didn't get the code?
+          <Stack direction="row" spacing={1} justifyContent="center" sx={{ mt: 2, fontSize: "1rem" }}>
+            <Typography>Didn't get the code?</Typography>
             <Link
+              component="button"
               onClick={() => {
                 navigate("/verification");
                 setError("");
                 setOtpValue(initialOtpValues);
               }}
               underline="hover"
-              style={{ fontWeight:'bold'}}
+              fontWeight="bold"
+              sx={{ fontSize: "1rem" }}
             >
               Resend it
             </Link>
-          </Grid>
+          </Stack>
         </Box>
       </Container>
       <ToastContainer />

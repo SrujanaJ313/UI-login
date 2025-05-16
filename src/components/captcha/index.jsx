@@ -1,7 +1,6 @@
 import { Button, CardActions, TextField } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import "./style.css";
-import { Field } from "formik";
 
 export const Captcha = ({ formik, captcha, getCaptcha }) => {
   const refreshString = () => {
@@ -19,8 +18,7 @@ export const Captcha = ({ formik, captcha, getCaptcha }) => {
         ></Button>
       </CardActions>
       
-      <Field
-        as={TextField}
+      <TextField
         name="captcha"
         size="small"
         placeholder="Captcha"

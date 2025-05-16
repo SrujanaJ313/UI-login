@@ -19,7 +19,8 @@ function PrivateRoute() {
 function AppRoutes() {
     // const isAuthRoute = useAuthRouteCheck();
     // const showHeader = !isAuthRoute
-    const isLoggedin = Object.keys(localStorage.getItem("user") || {}).length;
+    // const isLoggedin = Object.keys(localStorage.getItem("user") || {}).length;
+    const isLoggedin = false;
 
     return (
         <>

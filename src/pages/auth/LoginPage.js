@@ -1,16 +1,13 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Divider } from "@mui/material";
-import { Formik, Field } from "formik";
+import { Divider, Stack } from "@mui/material";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-// import Checkbox from "@mui/material/Checkbox";
-// import FormControlLabel from "@mui/material/FormControlLabel";
 import { useState } from "react";
 import { Captcha } from "../../components/captcha";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -21,7 +18,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const user =
     localStorage.getItem("user") && JSON.parse(localStorage.getItem("user"));
-  // const [remember, setRemember] = useState(user?.remember || false);
   const [captcha, setCaptcha] = useState(() =>
     Math.random().toString(36).slice(8)
   );
@@ -30,41 +26,29 @@ export default function LoginPage() {
     setCaptcha(captchaValue);
   };
 
-  const handleSubmit = (values) => {
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        userID: values.userID,
-        password: values.password,
-      })
-    );
-    // if (remember) {
-    //   localStorage.setItem(
-    //     "user",
-    //     JSON.stringify({
-    //       userID: values.userID,
-    //       password: values.password,
-    //       remember,
-    //     })
-    //   );
-    // } else {
-    //   localStorage.setItem(
-    //     "user",
-    //     JSON.stringify({
-    //       userIdentity: "123",
-    //       userName: "Test User",
-    //       userEmail: "testUser@gmail.com",
-    //     })
-    //   );
-    // }
-    // navigate("/msl-reference-list", { state: { remember } });
-    navigate("/msl-reference-list");
-  };
-
-  const validationSchema = Yup.object().shape({
-    userID: Yup.string().required("UserID is required"),
-    password: Yup.string().required("Password is required"),
-    captcha: Yup.string().required("please enter captcha").matches(captcha),
+  const formik = useFormik({
+    initialValues: {
+      userID: user?.userID || "",
+      password: user?.password || "",
+      captcha: "",
+    },
+    validationSchema: Yup.object().shape({
+      userID: Yup.string().required("UserID is required"),
+      password: Yup.string().required("Password is required"),
+      captcha: Yup.string()
+        .required("Please enter captcha")
+        .test("match", "Captcha does not match", (value) => value === captcha),
+    }),
+    onSubmit: (values) => {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          userID: values.userID,
+          password: values.password,
+        })
+      );
+      navigate("/msl-reference-list");
+    },
   });
 
   return (
@@ -86,104 +70,75 @@ export default function LoginPage() {
         <Typography component="h1" variant="h3" fontWeight="900">
           NHUIS
         </Typography>
-        <Formik
-          initialValues={{
-            userID: user?.userID || "",
-            password: user?.password || "",
-            // remember,
-            captcha: "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {(formik) => {
-            return (
-              <form onSubmit={formik.handleSubmit}>
-                <TextField
-                  size="small"
-                  name="userID"
-                  placeholder="User ID"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.userID}
-                  error={formik.touched.userID && Boolean(formik.errors.userID)}
-                  helperText={formik.touched.userID && formik.errors.userID}
-                  label="User ID"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AccountCircleIcon />
-                      </InputAdornment>
-                    ),
-                    sx: { borderRadius: 30 },
-                  }}
-                />
-                <Field
-                  as={TextField}
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                  error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                  }
-                  helperText={formik.touched.password && formik.errors.password}
-                  label="Password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockIcon />
-                      </InputAdornment>
-                    ),
-                    sx: { borderRadius: 30 },
-                  }}
-                />
-                <Captcha
-                  formik={formik}
-                  captcha={captcha}
-                  getCaptcha={getCaptcha}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  size="small"
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    textTransform: "none",
-                    fontSize: "1.2rem",
-                    borderRadius: "30px",
-                  }}
-                >
-                  Log In
-                </Button>
-                {/* <div style={{ display: "flex", justifyContent: "center" }}>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Remember Me"
-                    checked={remember}
-                    onClick={() => setRemember(!remember)}
-                  />
-                </div> */}
-              </form>
-            );
-          }}
-        </Formik>
-        <Grid
-          item
-          container
-          alignItems="center"
-          flexDirection="column"
-          sx={{ m: 1, fontSize: "1rem" }}
-        >
+        <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+          <TextField
+            size="small"
+            name="userID"
+            placeholder="User ID"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.userID}
+            error={formik.touched.userID && Boolean(formik.errors.userID)}
+            helperText={formik.touched.userID && formik.errors.userID}
+            label="User ID"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccountCircleIcon />
+                </InputAdornment>
+              ),
+              sx: { borderRadius: 30 },
+            }}
+          />
+          <TextField
+            size="small"
+            name="password"
+            placeholder="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            label="Password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon />
+                </InputAdornment>
+              ),
+              sx: { borderRadius: 30 },
+            }}
+          />
+          <Captcha
+            formik={formik}
+            captcha={captcha}
+            getCaptcha={getCaptcha}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            size="small"
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 2,
+              textTransform: "none",
+              fontSize: "1.2rem",
+              borderRadius: "30px",
+            }}
+          >
+            Log In
+          </Button>
+        </form>
+
+        <Stack spacing={1} alignItems="center" sx={{ width: "100%" }}>
           <Link
             href=""
             onClick={() =>
@@ -193,14 +148,7 @@ export default function LoginPage() {
           >
             Forgot username?
           </Link>
-        </Grid>
-        <Grid
-          item
-          container
-          alignItems="center"
-          flexDirection="column"
-          sx={{ m: 1, fontSize: "1rem" }}
-        >
+
           <Link
             href=""
             onClick={() =>
@@ -210,24 +158,22 @@ export default function LoginPage() {
           >
             Forgot password?
           </Link>
-        </Grid>
-        <Grid
-          container
+        </Stack>
+
+        <Stack
+          direction="row"
           alignItems="center"
           justifyContent="center"
-          flexDirection="row"
-          gap={2}
+          spacing={2}
+          sx={{ width: "100%", mt: 2 }}
         >
-          <Grid item flexItem sx={{ width: "40%" }}>
-            <Divider />
-          </Grid>
+          <Divider sx={{ flexGrow: 1 }} />
           <Typography component="span" sx={{ fontSize: "1.2rem" }}>
             or
           </Typography>
-          <Grid item flexItem sx={{ width: "40%" }}>
-            <Divider />
-          </Grid>
-        </Grid>
+          <Divider sx={{ flexGrow: 1 }} />
+        </Stack>
+
         <Button
           fullWidth
           variant="contained"
